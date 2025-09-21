@@ -1,32 +1,36 @@
 // server.js
-const express = require("express");
+const http = require("http");
+const fs = require("fs");
 const path = require("path");
 
-const app = express();
-const PORT = process.env.PORT || 3000;
+// Helper to serve HTML files
+function serveFile(filePath, res) {
+  fs.readFile(filePath, (err, data) => {
+    if (err) {
+      res.writeHead(500, { "Content-Type": "text/html" });
+      res.end("<h1>500 - Internal Server Error</h1>");
+    } else {
+      res.writeHead(200, { "Content-Type": "text/html" });
+      res.end(data);
+    }
+  });
+}
 
-// Middleware to serve static files (HTML, CSS, JS)
-app.use(express.static(path.join(__dirname, "public")));
-
-// Routes
-app.get("/", (req, res) => {
-  res.sendFile(path.join(__dirname, "public", "home.html"));
-});
-
-app.get("/aboutus", (req, res) => {
-  res.sendFile(path.join(__dirname, "public", "aboutus.html"));
-});
-
-app.get("/contactus", (req, res) => {
-  res.sendFile(path.join(__dirname, "public", "contactus.html"));
-});
-
-// Fallback for undefined routes
-app.use((req, res) => {
-  res.status(404).send("<h1>404 - Page Not Found</h1>");
+const server = http.createServer((req, res) => {
+  if (req.url === "/" || req.url === "/home") {
+    serveFile(path.join(__dirname,"public", "/home.html"), res);
+  } else if (req.url === "/aboutus") {
+    serveFile(path.join(__dirname, "public","aboutus.html"), res);
+  } else if (req.url === "/contactus") {
+    serveFile(path.join(__dirname,"public", "contactus.html"), res);
+  } else {
+    res.writeHead(404, { "Content-Type": "text/html" });
+    res.end("<h1>404 - Page Not Found</h1>");
+  }
 });
 
 // Start server
-app.listen(PORT, () => {
-  console.log(`🚀 Server running at http://localhost:${PORT}`);
+const PORT = 3000;
+server.listen(PORT, () => {
+  console.log(`Server running at http://localhost:${PORT}`);
 });

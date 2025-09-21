@@ -1,118 +1,135 @@
-# Assignment6 - Node + HTML Website
-/node_modules
+# 🌐 Simple Node.js Server (Without Express)
 
-A simple Node.js + Express web application serving static HTML pages with routing for Home, About Us, and Contact Us.
+This project demonstrates how to build a lightweight web server using **only Node.js core modules** (`http`, `fs`, and `path`) without relying on external frameworks like Express.js.  
+
+It serves three static HTML pages:  
+- 🏠 **Home** (`home.html`)  
+- ℹ️ **About Us** (`aboutus.html`)  
+- 📞 **Contact Us** (`contactus.html`)  
 
 ---
 
 ## 📂 Project Structure
 
 ```
-Assignment6/
-│ server.js           # Node.js server with Express routes
-│ package.json
-└── public/           # Static frontend files
-    ├─ home.html
-    ├─ aboutus.html
-    ├─ contactus.html
-    ├─ style.css      # optional CSS
-    └─ script.js      # optional JS
+project/
+│-- server.js          # Main server file
+│-- public/            # Folder containing static HTML files
+    │-- home.html
+    │-- aboutus.html
+    │-- contactus.html
 ```
 
 ---
 
-## 🚀 Features
+## ⚙️ How It Works
 
-- Serve static HTML pages using Express.
-- Routing for:
-  - `/` → Home
-  - `/aboutus` → About Us
-  - `/contactus` → Contact Us
-- Responsive design using Bootstrap CDN.
-- Clean and modern layout for all pages.
-- Ready for deployment to Render or Heroku.
+- `http` → Creates the web server and listens for requests.  
+- `fs` → Reads the HTML files from the filesystem.  
+- `path` → Safely constructs file paths.  
+- Routes:
+  - `/` or `/home` → Loads `home.html`  
+  - `/aboutus` → Loads `aboutus.html`  
+  - `/contactus` → Loads `contactus.html`  
+  - Any other route → Shows a **404 Page Not Found**  
 
 ---
 
-## 💻 Installation & Local Usage
+## 🚀 Getting Started
 
-1. Clone the repository:
+### 1. Install Node.js
+Check if Node.js is installed:
 ```bash
-git clone https://github.com/your-username/Assignment6.git
+node -v
+```
+If not, download and install from [Node.js official site](https://nodejs.org/).
+
+---
+
+### 2. Clone or Create the Project
+```bash
+git clone <your-repo-url>
+cd project
 ```
 
-2. Navigate to the project folder:
-```bash
-cd Assignment6
-```
+---
 
-3. Install dependencies:
-```bash
-npm install
-```
-
-4. Start the server locally:
+### 3. Run the Server
 ```bash
 node server.js
 ```
 
-5. Open your browser:
-- `http://localhost:3000/` → Home  
-- `http://localhost:3000/aboutus` → About Us  
-- `http://localhost:3000/contactus` → Contact Us  
+---
+
+### 4. Open in Browser
+- [http://localhost:3000/](http://localhost:3000/) → Home Page  
+- [http://localhost:3000/aboutus](http://localhost:3000/aboutus) → About Us Page  
+- [http://localhost:3000/contactus](http://localhost:3000/contactus) → Contact Us Page  
 
 ---
 
-## ⚙️ Deployment Instructions
+## 🛠 Example Code (server.js)
 
-### Render.com
-1. Push your project to GitHub.  
-2. Go to [Render](https://render.com) → New → Web Service → Connect GitHub repo.  
-3. Branch: `main` (or your active branch).  
-4. Build Command: leave empty (static HTML, no build needed) or `npm install`.  
-5. Start Command:
-```bash
-node server.js
-```  
-6. Render will deploy and give a live URL.
+```js
+const http = require("http");
+const fs = require("fs");
+const path = require("path");
 
-### Heroku
-1. Install Heroku CLI: [https://devcenter.heroku.com/articles/heroku-cli](https://devcenter.heroku.com/articles/heroku-cli)  
-2. Log in:
-```bash
-heroku login
-```  
-3. Create a new app:
-```bash
-heroku create
-```  
-4. Push your code:
-```bash
-git push heroku main
-```  
-5. Open the app:
-```bash
-heroku open
+function serveFile(filePath, res) {
+  fs.readFile(filePath, (err, data) => {
+    if (err) {
+      res.writeHead(500, { "Content-Type": "text/html" });
+      res.end("<h1>500 - Internal Server Error</h1>");
+    } else {
+      res.writeHead(200, { "Content-Type": "text/html" });
+      res.end(data);
+    }
+  });
+}
+
+const server = http.createServer((req, res) => {
+  if (req.url === "/" || req.url === "/home") {
+    serveFile(path.join(__dirname, "public", "home.html"), res);
+  } else if (req.url === "/aboutus") {
+    serveFile(path.join(__dirname, "public", "aboutus.html"), res);
+  } else if (req.url === "/contactus") {
+    serveFile(path.join(__dirname, "public", "contactus.html"), res);
+  } else {
+    res.writeHead(404, { "Content-Type": "text/html" });
+    res.end("<h1>404 - Page Not Found</h1>");
+  }
+});
+
+server.listen(3000, () => {
+  console.log("Server running at http://localhost:3000");
+});
 ```
 
 ---
 
-## 📦 Dependencies
+## 📌 Features
 
-- [Node.js](https://nodejs.org/)
-- [Express](https://expressjs.com/)
-- [Bootstrap 5](https://getbootstrap.com/)
-
----
-
-## 🗑️ License
-
-This project is open-source and available under the MIT License.
+- ✅ Pure Node.js (no external libraries required)  
+- ✅ Serves static HTML files  
+- ✅ Clean routing for Home, About Us, and Contact Us  
+- ✅ Handles 404 errors gracefully  
 
 ---
 
-## 👤 Author
+## 🔮 Future Improvements
 
-**Your Name**  
-[GitHub Profile](https://github.com/your-username)
+- Serve CSS, JavaScript, and image files (static assets)  
+- Add logging for requests  
+- Enable query parameter handling  
+- Add support for POST requests (e.g., contact form)  
+- Convert to use a templating engine (EJS, Handlebars, etc.)  
+
+---
+
+## 📜 License
+
+This project is open-source and available under the **MIT License**.  
+You are free to use, modify, and distribute it for personal or commercial purposes.  
+
+---
 
