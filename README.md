@@ -1,3 +1,8 @@
+# this project is build and deployed in render and available in 
+
+https://node-mysm.onrender.com/
+
+
 # 🌐 Simple Node.js Server (Without Express)
 
 This project demonstrates how to build a lightweight web server using **only Node.js core modules** (`http`, `fs`, and `path`) without relying on external frameworks like Express.js.  
